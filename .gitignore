@@ -1,0 +1,8 @@
+# ignores all files without extensions that are not Makefile
+*
+!*.*
+!*/
+!Makefile
+
+.vscode/*
+.DS_Store
