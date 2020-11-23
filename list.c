@@ -49,11 +49,75 @@ static int traverseNode(node* n, int remaining) {
 }
 
 bool getValueAt(list* l, int index, int* res) {
-    if (index >= l->size) {
+    if (index >= l->size || index < 0) {
         return false;
     } else {
         *res = traverseNode(l->head, index);
         return true;
+    }
+}
+
+bool insertValueAt(list* l, int index, int val) {
+    if (index > l->size || index < 0) {
+        return false;
+    } else {
+        node* current = l->head;
+        node* previous = NULL;
+        while (index--) {
+            previous = current;
+            current = current->next;
+        }
+        node* newNode = createNode(val);
+        if (current == l->head) {
+            l->head = newNode;
+            newNode->next = current;
+        } else {
+            previous->next = newNode;
+            newNode->next = current;
+        }
+        l->size++;
+        return true;
+    }
+}
+
+bool removeValueAt(list* l, int index, int* res) {
+    if (index >= l->size || index < 0) {
+        return false;
+    } else {
+        node* previous = NULL;
+        node* current = l->head;
+        while (index--) {
+            previous = current;
+            current = current->next;
+        }
+        if (current == l->head) {
+            l->head = current->next;
+        }
+        if (current == l->tail) {
+            l->tail = previous;
+        }
+        if (previous) {
+            previous->next = current->next;
+        }
+        *res = current->value;
+        free(current);
+        l->size--;
+        return true;
+    }
+}
+
+void reverseList(list* l) {
+    node* current = l->head;
+    node* previous = NULL;
+    while (current) {
+        node* next = current->next;
+        if (next == NULL) {
+            l->tail = l->head;
+            l->head = current;
+        }
+        current->next = previous;
+        previous = current;
+        current = next;
     }
 }
 
