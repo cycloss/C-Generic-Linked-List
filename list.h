@@ -1,5 +1,6 @@
 #include "node.h"
 #include <stdbool.h>
+
 typedef struct {
     node* head;
     node* tail;
@@ -7,11 +8,11 @@ typedef struct {
 } list;
 
 list* createList();
-void appendToList(list* l, int val);
-void prependToList(list* l, int val);
-bool getValueAt(list* l, int index, int* res);
-void printList(list* l);
+void appendToList(list* l, void* pVal);
+void prependToList(list* l, void* pVal);
+bool getValueAt(list* l, int index, void** res);
+bool insertValueAt(list* l, int index, void* pVal);
+bool removeValueAt(list* l, int index, void** res);
+void printList(list* l, void (*printVal)(void*));
 void reverseList(list* l);
-bool removeValueAt(list* l, int index, int* res);
-bool insertValueAt(list* l, int index, int val);
 void freeList(list* l);

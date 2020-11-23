@@ -1,5 +1,5 @@
 HEADER_FILES = node.h list.h
-SOURCE_FILES = list.c node.c
+SOURCE_FILES = list.c
 TEST_FILES = listTest.c
 OS := $(shell uname)
 

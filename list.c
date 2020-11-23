@@ -12,14 +12,14 @@ list* createList() {
     return newListP;
 }
 
-static node* createNode(int val) {
+static node* createNode(void* pVal) {
     node* np = malloc(sizeof(node));
-    *np = (node) { val, NULL };
+    *np = (node) { pVal, NULL };
     return np;
 }
 
-void appendToList(list* l, int val) {
-    node* np = createNode(val);
+void appendToList(list* l, void* pVal) {
+    node* np = createNode(pVal);
     if (l->tail) {
         l->tail->next = np;
         l->tail = np;
@@ -29,18 +29,18 @@ void appendToList(list* l, int val) {
     l->size++;
 }
 
-void prependToList(list* l, int val) {
-    node* np = createNode(val);
+void prependToList(list* l, void* pVal) {
+    node* np = createNode(pVal);
     if (l->head) {
         np->next = l->head;
         l->head = np;
     } else {
-        appendToList(l, val);
+        appendToList(l, pVal);
     }
     l->size++;
 }
 
-static int traverseNode(node* n, int remaining) {
+static void* traverseNode(node* n, int remaining) {
     if (remaining) {
         return traverseNode(n->next, remaining - 1);
     } else {
@@ -48,7 +48,7 @@ static int traverseNode(node* n, int remaining) {
     }
 }
 
-bool getValueAt(list* l, int index, int* res) {
+bool getValueAt(list* l, int index, void** res) {
     if (index >= l->size || index < 0) {
         return false;
     } else {
@@ -57,7 +57,7 @@ bool getValueAt(list* l, int index, int* res) {
     }
 }
 
-bool insertValueAt(list* l, int index, int val) {
+bool insertValueAt(list* l, int index, void* pVal) {
     if (index > l->size || index < 0) {
         return false;
     } else {
@@ -67,7 +67,7 @@ bool insertValueAt(list* l, int index, int val) {
             previous = current;
             current = current->next;
         }
-        node* newNode = createNode(val);
+        node* newNode = createNode(pVal);
         if (current == l->head) {
             l->head = newNode;
             newNode->next = current;
@@ -80,7 +80,7 @@ bool insertValueAt(list* l, int index, int val) {
     }
 }
 
-bool removeValueAt(list* l, int index, int* res) {
+bool removeValueAt(list* l, int index, void** res) {
     if (index >= l->size || index < 0) {
         return false;
     } else {
@@ -121,12 +121,12 @@ void reverseList(list* l) {
     }
 }
 
-void printList(list* l) {
+void printList(list* l, void (*printVal)(void*)) {
     puts("------------");
     node* current = l->head;
     for (int i = 0; current; i++) {
         printf("node at %i: ", i);
-        printNode(current);
+        printVal(current->value);
         current = current->next;
     }
     puts("------------");
@@ -136,6 +136,7 @@ void freeList(list* l) {
     node* current = l->head;
     while (current) {
         node* next = current->next;
+        free(current->value);
         free(current);
         current = next;
     }
