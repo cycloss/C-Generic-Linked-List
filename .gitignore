@@ -3,6 +3,7 @@
 !*.*
 !*/
 !Makefile
+!LICENSE
 
 .vscode/*
 .DS_Store
