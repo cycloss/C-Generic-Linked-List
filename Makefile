@@ -1,11 +1,13 @@
 SRC_DIR = src/
+TEST_DIR = test/
 SOURCE_FILES = $(addprefix $(SRC_DIR), list.c)
 HEADER_FILES = $(addprefix $(SRC_DIR), node.h list.h)
 TEST_NAME = listTest
-TEST_FILE = $(SRC_DIR)$(TEST_NAME).c
+TEST_FILE = $(TEST_DIR)$(TEST_NAME).c
 
 OS := $(shell uname)
 
+.PHONY: test
 test: $(SOURCE_FILES) $(HEADER_FILES)
 	gcc -Wall $(SOURCE_FILES) $(TEST_FILE) -o $(TEST_NAME)
 
