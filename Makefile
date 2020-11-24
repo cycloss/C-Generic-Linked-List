@@ -1,16 +1,24 @@
-HEADER_FILES = node.h list.h
-SOURCE_FILES = list.c
-TEST_FILES = listTest.c
+SRC_DIR = src/
+SOURCE_FILES = $(addprefix $(SRC_DIR), list.c)
+HEADER_FILES = $(addprefix $(SRC_DIR), node.h list.h)
+TEST_NAME = listTest
+TEST_FILE = $(SRC_DIR)$(TEST_NAME).c
+
 OS := $(shell uname)
 
 test: $(SOURCE_FILES) $(HEADER_FILES)
-	gcc -Wall $(SOURCE_FILES) $(TEST_FILES) -o listTest
+	gcc -Wall $(SOURCE_FILES) $(TEST_FILE) -o $(TEST_NAME)
+
+./$(TEST_NAME): test
+
+leakCheck: ./$(TEST_NAME)
+	valgrind --leak-check=full ./$(TEST_NAME)
+	rm -rf listTest.dSYM
 
 ifeq ($(OS), Darwin)
 
-BASENAME = liblist
-LIB_NAME = $(BASENAME).a
-OBJECT_FILES = list.o node.o
+LIB_NAME = liblist.a
+OBJECT_FILES = list.o
 DESTDIR = /usr/local
 
 .PHONY: install
@@ -29,4 +37,5 @@ $(OBJECT_FILES): $(SOURCE_FILES)
 uninstall:
 	rm -f $(DESTDIR)/lib/$(LIB_NAME)
 	rm -f $(addprefix $(DESTDIR)/include/, $(HEADER_FILES))
+
 endif

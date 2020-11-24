@@ -6,6 +6,9 @@
 
 list* createList() {
     list* newListP = malloc(sizeof(list));
+    if (!newListP) {
+        return NULL;
+    }
     list l = { NULL, NULL, 0 };
     *newListP = l;
     return newListP;
@@ -13,6 +16,9 @@ list* createList() {
 
 static node* createNode(void* pVal) {
     node* np = malloc(sizeof(node));
+    if (!np) {
+        return NULL;
+    }
     *np = (node) { pVal, NULL };
     return np;
 }
@@ -23,8 +29,11 @@ static void* fatalError(char* msg) {
     return NULL;
 }
 
-void appendToList(list* l, void* pVal) {
+bool appendToList(list* l, void* pVal) {
     node* np = createNode(pVal);
+    if (!np) {
+        return false;
+    }
     if (l->tail) {
         l->tail->next = np;
         l->tail = np;
@@ -32,10 +41,14 @@ void appendToList(list* l, void* pVal) {
         l->head = l->tail = np;
     }
     l->size++;
+    return true;
 }
 
-void prependToList(list* l, void* pVal) {
+bool prependToList(list* l, void* pVal) {
     node* np = createNode(pVal);
+    if (!np) {
+        return false;
+    }
     if (l->head) {
         np->next = l->head;
         l->head = np;
@@ -43,6 +56,34 @@ void prependToList(list* l, void* pVal) {
         appendToList(l, pVal);
     }
     l->size++;
+    return true;
+}
+
+bool insertValueAt(list* l, int index, void* pVal) {
+    if (index > l->size || index < 0) {
+        fatalError("Index out of bounds");
+        return false;
+    } else {
+        node* current = l->head;
+        node* previous = NULL;
+        while (index--) {
+            previous = current;
+            current = current->next;
+        }
+        node* newNode = createNode(pVal);
+        if (!newNode) {
+            return false;
+        }
+        if (current == l->head) {
+            l->head = newNode;
+            newNode->next = current;
+        } else {
+            previous->next = newNode;
+            newNode->next = current;
+        }
+        l->size++;
+        return true;
+    }
 }
 
 static void* traverseNode(node* n, int remaining) {
@@ -93,28 +134,6 @@ void* getFirst(list* l) {
 
 void* getLast(list* l) {
     return getValueAt(l, l->size - 1);
-}
-
-void insertValueAt(list* l, int index, void* pVal) {
-    if (index > l->size || index < 0) {
-        fatalError("Index out of bounds");
-    } else {
-        node* current = l->head;
-        node* previous = NULL;
-        while (index--) {
-            previous = current;
-            current = current->next;
-        }
-        node* newNode = createNode(pVal);
-        if (current == l->head) {
-            l->head = newNode;
-            newNode->next = current;
-        } else {
-            previous->next = newNode;
-            newNode->next = current;
-        }
-        l->size++;
-    }
 }
 
 void reverseList(list* l) {
