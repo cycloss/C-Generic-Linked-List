@@ -2,6 +2,8 @@
 
 * Includes a number of common linked list functions
 * Node values are void pointers to enable the implementation to be generic
+* `free(list* l)` will attempt to free the pointers at each node's value, so only add pointers to the list that have been dynamically allocated.
+* Attempting to access an invalid index will throw a fatal error
 * See  `listTest.c` for an example of how to use some of the functions
 
 ## Building the test

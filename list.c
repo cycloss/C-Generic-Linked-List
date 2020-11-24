@@ -1,4 +1,3 @@
-//TODO make generic version with generic print statement lambda
 #include "list.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -16,6 +15,12 @@ static node* createNode(void* pVal) {
     node* np = malloc(sizeof(node));
     *np = (node) { pVal, NULL };
     return np;
+}
+
+static void* fatalError(char* msg) {
+    printf("Fatal error: %s\n", msg);
+    exit(1);
+    return NULL;
 }
 
 void appendToList(list* l, void* pVal) {
@@ -48,41 +53,9 @@ static void* traverseNode(node* n, int remaining) {
     }
 }
 
-bool getValueAt(list* l, int index, void** res) {
+void* removeValueAt(list* l, int index) {
     if (index >= l->size || index < 0) {
-        return false;
-    } else {
-        *res = traverseNode(l->head, index);
-        return true;
-    }
-}
-
-bool insertValueAt(list* l, int index, void* pVal) {
-    if (index > l->size || index < 0) {
-        return false;
-    } else {
-        node* current = l->head;
-        node* previous = NULL;
-        while (index--) {
-            previous = current;
-            current = current->next;
-        }
-        node* newNode = createNode(pVal);
-        if (current == l->head) {
-            l->head = newNode;
-            newNode->next = current;
-        } else {
-            previous->next = newNode;
-            newNode->next = current;
-        }
-        l->size++;
-        return true;
-    }
-}
-
-bool removeValueAt(list* l, int index, void** res) {
-    if (index >= l->size || index < 0) {
-        return false;
+        return fatalError("Index out of bounds");
     } else {
         node* previous = NULL;
         node* current = l->head;
@@ -99,10 +72,48 @@ bool removeValueAt(list* l, int index, void** res) {
         if (previous) {
             previous->next = current->next;
         }
-        *res = current->value;
+        void* val = current->value;
         free(current);
         l->size--;
-        return true;
+        return val;
+    }
+}
+
+void* getValueAt(list* l, int index) {
+    if (index >= l->size || index < 0) {
+        return fatalError("Index out of bounds");
+    } else {
+        return traverseNode(l->head, index);
+    }
+}
+
+void* getFirst(list* l) {
+    return getValueAt(l, 0);
+}
+
+void* getLast(list* l) {
+    return getValueAt(l, l->size - 1);
+}
+
+void insertValueAt(list* l, int index, void* pVal) {
+    if (index > l->size || index < 0) {
+        fatalError("Index out of bounds");
+    } else {
+        node* current = l->head;
+        node* previous = NULL;
+        while (index--) {
+            previous = current;
+            current = current->next;
+        }
+        node* newNode = createNode(pVal);
+        if (current == l->head) {
+            l->head = newNode;
+            newNode->next = current;
+        } else {
+            previous->next = newNode;
+            newNode->next = current;
+        }
+        l->size++;
     }
 }
 
