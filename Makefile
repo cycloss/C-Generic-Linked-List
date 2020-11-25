@@ -1,8 +1,8 @@
 SRC_DIR = src/
 TEST_DIR = test/
-SOURCE_FILES = $(addprefix $(SRC_DIR), list.c)
-HEADER_FILES = $(addprefix $(SRC_DIR), node.h list.h)
-TEST_NAME = listTest
+SOURCE_FILES = $(addprefix $(SRC_DIR), linkedList.c)
+HEADER_FILES = $(addprefix $(SRC_DIR), node.h linkedList.h)
+TEST_NAME = linkedListTest
 TEST_FILE = $(TEST_DIR)$(TEST_NAME).c
 
 OS := $(shell uname)
@@ -15,12 +15,12 @@ test: $(SOURCE_FILES) $(HEADER_FILES)
 
 leakCheck: ./$(TEST_NAME)
 	valgrind --leak-check=full ./$(TEST_NAME)
-	rm -rf listTest.dSYM
+	rm -rf $(TEST_NAME).dSYM
 
 ifeq ($(OS), Darwin)
 
-LIB_NAME = liblist.a
-OBJECT_FILES = list.o
+LIB_NAME = liblinkedlist.a
+OBJECT_FILES = linkedlist.o
 DESTDIR = /usr/local
 
 .PHONY: install

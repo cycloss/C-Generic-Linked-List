@@ -1,15 +1,18 @@
-#include "list.h"
+#include "linkedList.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-list* createList() {
-    list* newListP = malloc(sizeof(list));
+//TODO add toArray method, make sure to copy values else there will be problems if list is freed
+//TODO add benchmark
+
+linkedList* createList() {
+    linkedList* newListP = malloc(sizeof(linkedList));
     if (!newListP) {
         return NULL;
     }
-    list l = { NULL, NULL, 0 };
+    linkedList l = { NULL, NULL, 0 };
     *newListP = l;
     return newListP;
 }
@@ -29,7 +32,14 @@ static void* fatalError(char* msg) {
     return NULL;
 }
 
-bool appendToList(list* l, void* pVal) {
+static void checkNull(linkedList* l) {
+    if (!l) {
+        fatalError("linkedList was null");
+    }
+}
+
+bool appendToList(linkedList* l, void* pVal) {
+    checkNull(l);
     node* np = createNode(pVal);
     if (!np) {
         return false;
@@ -40,11 +50,12 @@ bool appendToList(list* l, void* pVal) {
     } else {
         l->head = l->tail = np;
     }
-    l->size++;
+    l->_size++;
     return true;
 }
 
-bool prependToList(list* l, void* pVal) {
+bool prependToList(linkedList* l, void* pVal) {
+    checkNull(l);
     node* np = createNode(pVal);
     if (!np) {
         return false;
@@ -55,12 +66,13 @@ bool prependToList(list* l, void* pVal) {
     } else {
         appendToList(l, pVal);
     }
-    l->size++;
+    l->_size++;
     return true;
 }
 
-bool insertValueAt(list* l, int index, void* pVal) {
-    if (index > l->size || index < 0) {
+bool insertValueAt(linkedList* l, int index, void* pVal) {
+    checkNull(l);
+    if (index > l->_size || index < 0) {
         fatalError("Index out of bounds");
         return false;
     } else {
@@ -81,7 +93,7 @@ bool insertValueAt(list* l, int index, void* pVal) {
             previous->next = newNode;
             newNode->next = current;
         }
-        l->size++;
+        l->_size++;
         return true;
     }
 }
@@ -94,8 +106,9 @@ static void* traverseNode(node* n, int remaining) {
     }
 }
 
-void* removeValueAt(list* l, int index) {
-    if (index >= l->size || index < 0) {
+void* removeValueAt(linkedList* l, int index) {
+    checkNull(l);
+    if (index >= l->_size || index < 0) {
         return fatalError("Index out of bounds");
     } else {
         node* previous = NULL;
@@ -115,28 +128,46 @@ void* removeValueAt(list* l, int index) {
         }
         void* val = current->value;
         free(current);
-        l->size--;
+        l->_size--;
         return val;
     }
 }
 
-void* getValueAt(list* l, int index) {
-    if (index >= l->size || index < 0) {
+void* getValueAt(linkedList* l, int index) {
+    checkNull(l);
+    if (index >= l->_size || index < 0) {
         return fatalError("Index out of bounds");
     } else {
         return traverseNode(l->head, index);
     }
 }
 
-void* getFirst(list* l) {
+void* getFirst(linkedList* l) {
     return getValueAt(l, 0);
 }
 
-void* getLast(list* l) {
-    return getValueAt(l, l->size - 1);
+void* getLast(linkedList* l) {
+    return getValueAt(l, l->_size - 1);
 }
 
-void reverseList(list* l) {
+int getLastIndex(linkedList* l) {
+    checkNull(l);
+    return l->_size <= 0 ? -1 : l->_size - 1;
+}
+
+int findValue(linkedList* l, void* value, bool (*comparator)(void*, void*)) {
+    checkNull(l);
+    node* current = l->head;
+    for (int i = 0; current; current = current->next, i++) {
+        if (comparator(value, current->value)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void reverseList(linkedList* l) {
+    checkNull(l);
     node* current = l->head;
     node* previous = NULL;
     while (current) {
@@ -151,18 +182,16 @@ void reverseList(list* l) {
     }
 }
 
-void printList(list* l, void (*printVal)(void*)) {
-    puts("------------");
+void iterateList(linkedList* l, void (*iterator)(void*)) {
+    checkNull(l);
     node* current = l->head;
-    for (int i = 0; current; i++) {
-        printf("node at %i: ", i);
-        printVal(current->value);
-        current = current->next;
+    for (; current; current = current->next) {
+        iterator(current->value);
     }
-    puts("------------");
 }
 
-void freeList(list* l) {
+void freeList(linkedList* l) {
+    checkNull(l);
     node* current = l->head;
     while (current) {
         node* next = current->next;
