@@ -1,13 +1,22 @@
 #include "../src/linkedList.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-void printVal(void* val) {
+void printInt(void* val) {
     printf("%i\n", *(int*)val);
 }
 
-void printList(linkedList* l) {
-    iterateListValues(l, printVal);
+void printIntList(linkedList* l) {
+    iterateListValues(l, printInt);
+}
+
+void printString(void* val) {
+    puts((char*)val);
+}
+
+void printStringList(linkedList* l) {
+    iterateListValues(l, printString);
 }
 
 int main() {
@@ -19,11 +28,11 @@ int main() {
         *pVal = i;
         appendToList(l, pVal);
     }
-    printList(l);
+    printIntList(l);
 
     puts("Reversing list...");
     reverseList(l);
-    printList(l);
+    printIntList(l);
 
     int index = 3;
     void* res = getValueAt(l, index);
@@ -40,18 +49,31 @@ int main() {
     *pVal = 8;
     printf("Inserting %i at index %i\n", *pVal, ind);
     insertValueAt(l, ind, pVal);
-    printList(l);
+    printIntList(l);
 
     int searchVal = 3;
     int foundIndex = findIndexOfValue(l, &searchVal, intComparator);
-    foundIndex == -1 ? puts("Failed to find value") : printf("Found value %i at index: %i\n", searchVal, foundIndex);
+    foundIndex == -1 ? puts("Failed to find search int") : printf("Found value %i at index: %i\n", searchVal, foundIndex);
 
     int lastIndex = getLastIndex(l);
     lastIndex == -1 ? puts("List empty") : printf("Last index is: %i\n", lastIndex);
 
     puts("Clearing list...");
-    // clearList(l);
-    //TODO add string test
+    clearList(l);
+
+    puts("Creating string list...");
+    char* strs[] = { "London", "Paris", "Berlin", "Moscow", "Beijing", "Tokyo" };
+    int len = sizeof(strs) / sizeof(char*);
+    for (int i = 0; i < len; i++) {
+        char* str = malloc(sizeof(char) * (strlen(strs[i]) + 1));
+        strcpy(str, strs[i]);
+        appendToList(l, str);
+    }
+    printStringList(l);
+
+    char* searchStr = "Tokyo";
+    int foundIndex2 = findIndexOfValue(l, searchStr, stringComparator);
+    foundIndex2 == -1 ? puts("Failed to find search string") : printf("Found value %s at index: %i\n", searchStr, foundIndex2);
 
     puts("Freeing list...");
     freeList(l);

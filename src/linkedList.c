@@ -203,9 +203,10 @@ static void freeNodeAndValue(node* n) {
     free(n);
 }
 
-//TODO: fix bug as not properly clearing list
 void clearList(linkedList* l) {
     iterateListNodes(l, freeNodeAndValue);
+    l->head = NULL;
+    l->tail = NULL;
     l->_size = 0;
 }
 

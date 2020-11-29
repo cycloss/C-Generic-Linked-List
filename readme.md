@@ -19,4 +19,4 @@
 * Run: `make install` from within the directory where the Makefile is located
 * Run: `make uninstall` to remove previously installed files
 * Include in a program (eg `programName.c`) with `#include <linkedlist.h>`
-* Compile with `gcc programName.c -llinkedlist -o programName`
+* Compile with `gcc programName.c -lGenericStructures -o programName`
