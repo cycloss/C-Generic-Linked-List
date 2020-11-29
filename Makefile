@@ -19,17 +19,16 @@ leakCheck: ./$(TEST_NAME)
 
 ifeq ($(OS), Darwin)
 
-LIB_NAME = liblinkedlist.a
+LIB_NAME = libGenericStructures.a
 OBJECT_FILES = linkedlist.o
 DESTDIR = /usr/local
 
 .PHONY: install
 install: $(LIB_NAME) $(HEADER_FILES)
-	mv $(LIB_NAME) $(DESTDIR)/lib
 	cp $(HEADER_FILES) $(DESTDIR)/include
 
 $(LIB_NAME): $(OBJECT_FILES)
-	ar -rcs $(LIB_NAME) $(OBJECT_FILES)
+	ar -rcs $(DESTDIR)/lib/$(LIB_NAME) $(OBJECT_FILES)
 	rm -f $(OBJECT_FILES)
 
 $(OBJECT_FILES): $(SOURCE_FILES)

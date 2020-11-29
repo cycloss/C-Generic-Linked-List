@@ -7,11 +7,7 @@ void printVal(void* val) {
 }
 
 void printList(linkedList* l) {
-    iterateList(l, printVal);
-}
-
-bool comparator(void* searchVal, void* currentVal) {
-    return *(int*)searchVal == *(int*)currentVal;
+    iterateListValues(l, printVal);
 }
 
 int main() {
@@ -47,11 +43,15 @@ int main() {
     printList(l);
 
     int searchVal = 3;
-    int foundIndex = findValue(l, &searchVal, comparator);
+    int foundIndex = findIndexOfValue(l, &searchVal, intComparator);
     foundIndex == -1 ? puts("Failed to find value") : printf("Found value %i at index: %i\n", searchVal, foundIndex);
 
     int lastIndex = getLastIndex(l);
     lastIndex == -1 ? puts("List empty") : printf("Last index is: %i\n", lastIndex);
+
+    puts("Clearing list...");
+    // clearList(l);
+    //TODO add string test
 
     puts("Freeing list...");
     freeList(l);

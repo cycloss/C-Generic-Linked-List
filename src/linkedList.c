@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 //TODO add toArray method, make sure to copy values else there will be problems if list is freed
 //TODO add benchmark
@@ -155,7 +154,7 @@ int getLastIndex(linkedList* l) {
     return l->_size <= 0 ? -1 : l->_size - 1;
 }
 
-int findValue(linkedList* l, void* value, bool (*comparator)(void*, void*)) {
+int findIndexOfValue(linkedList* l, void* value, bool (*comparator)(void*, void*)) {
     checkNull(l);
     node* current = l->head;
     for (int i = 0; current; current = current->next, i++) {
@@ -182,22 +181,65 @@ void reverseList(linkedList* l) {
     }
 }
 
-void iterateList(linkedList* l, void (*iterator)(void*)) {
+void iterateListValues(linkedList* l, void (*iterator)(void*)) {
     checkNull(l);
-    node* current = l->head;
-    for (; current; current = current->next) {
+    for (node* current = l->head; current; current = current->next) {
         iterator(current->value);
     }
 }
 
-void freeList(linkedList* l) {
+static void iterateListNodes(linkedList* l, void (*iterator)(node*)) {
     checkNull(l);
     node* current = l->head;
     while (current) {
         node* next = current->next;
-        free(current->value);
-        free(current);
+        iterator(current);
         current = next;
     }
+}
+
+static void freeNodeAndValue(node* n) {
+    free(n->value);
+    free(n);
+}
+
+//TODO: fix bug as not properly clearing list
+void clearList(linkedList* l) {
+    iterateListNodes(l, freeNodeAndValue);
+    l->_size = 0;
+}
+
+void freeList(linkedList* l) {
+    checkNull(l);
+    clearList(l);
     free(l);
+}
+
+bool intComparator(void* searchVal, void* currentVal) {
+    return *(int*)searchVal == *(int*)currentVal;
+}
+
+bool floatComparator(void* searchVal, void* currentVal) {
+    return *(float*)searchVal == *(float*)currentVal;
+}
+
+bool doubleComparator(void* searchVal, void* currentVal) {
+    return *(double*)searchVal == *(double*)currentVal;
+}
+
+bool longComparator(void* searchVal, void* currentVal) {
+    return *(long*)searchVal == *(long*)currentVal;
+}
+
+bool charComparator(void* searchVal, void* currentVal) {
+    return *(char*)searchVal == *(char*)currentVal;
+}
+
+bool stringComparator(void* searchVal, void* currentVal) {
+    for (char *str1 = (char*)searchVal, *str2 = (char*)currentVal; *str1 != '\0' || *str2 != '\0'; str1++, str2++) {
+        if (*str1 != *str2) {
+            return false;
+        }
+    }
+    return true;
 }
