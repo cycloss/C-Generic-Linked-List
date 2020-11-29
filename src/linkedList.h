@@ -21,6 +21,7 @@ void* getFirst(linkedList* l);
 void* getLast(linkedList* l);
 int getLastIndex(linkedList* l);
 int findIndexOfValue(linkedList* l, void* value, bool (*comparator)(void*, void*));
+int getListSize(linkedList* l);
 void iterateListValues(linkedList* l, void (*iterator)(void*));
 void reverseList(linkedList* l);
 void clearList(linkedList* l);
@@ -32,5 +33,15 @@ bool doubleComparator(void* searchVal, void* currentVal);
 bool longComparator(void* searchVal, void* currentVal);
 bool charComparator(void* searchVal, void* currentVal);
 bool stringComparator(void* searchVal, void* currentVal);
+
+void** listToArrayShallowCpy(linkedList* l);
+void** listToArrayDeepCpy(linkedList* l, void* (*memAllocFunc)(void*));
+
+void* intMemAlloc(void* intToCpy);
+void* floatMemAlloc(void* floatToCpy);
+void* doubleMemAlloc(void* doubleToCpy);
+void* longMemAlloc(void* longToCpy);
+void* charMemAlloc(void* charToCpy);
+void* stringMemAlloc(void* strToCpy);
 
 #endif

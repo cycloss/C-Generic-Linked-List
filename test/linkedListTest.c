@@ -3,20 +3,50 @@
 #include <stdlib.h>
 #include <string.h>
 
+//TODO make header file for test. Add to makefile
+
 void printInt(void* val) {
-    printf("%i\n", *(int*)val);
+    printf(" %i |", *(int*)val);
 }
 
 void printIntList(linkedList* l) {
+    printf("|");
     iterateListValues(l, printInt);
+    puts("");
 }
 
 void printString(void* val) {
-    puts((char*)val);
+    printf(" %s |", (char*)val);
 }
 
 void printStringList(linkedList* l) {
+    printf("|");
     iterateListValues(l, printString);
+    puts("");
+}
+
+void printStringArray(char** arr, int len) {
+    printf("Array: ");
+    for (int i = 0; i < len; i++) {
+        printf("%s, ", arr[i]);
+    }
+    puts("");
+}
+
+void printIntArray(int** arr, int len) {
+    printf("Array: ");
+    for (int i = 0; i < len; i++) {
+        printf("%i, ", *arr[i]);
+    }
+    puts("");
+}
+
+void freeArray(void* arr, int len) {
+    void** arrp = (void**)arr;
+    for (int i = 0; i < len; i++) {
+        free(arrp[i]);
+    }
+    free(arr);
 }
 
 int main() {
@@ -58,6 +88,11 @@ int main() {
     int lastIndex = getLastIndex(l);
     lastIndex == -1 ? puts("List empty") : printf("Last index is: %i\n", lastIndex);
 
+    puts("Creating deep copy array from list...");
+    int** arr = (int**)listToArrayDeepCpy(l, intMemAlloc);
+    printIntArray(arr, getListSize(l));
+    freeArray(arr, getListSize(l));
+
     puts("Clearing list...");
     clearList(l);
 
@@ -74,6 +109,11 @@ int main() {
     char* searchStr = "Tokyo";
     int foundIndex2 = findIndexOfValue(l, searchStr, stringComparator);
     foundIndex2 == -1 ? puts("Failed to find search string") : printf("Found value %s at index: %i\n", searchStr, foundIndex2);
+
+    puts("Creating deep copy array from list...");
+    char** arr2 = (char**)listToArrayDeepCpy(l, stringMemAlloc);
+    printStringArray(arr2, getListSize(l));
+    freeArray(arr2, getListSize(l));
 
     puts("Freeing list...");
     freeList(l);

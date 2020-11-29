@@ -2,8 +2,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-//TODO add toArray method, make sure to copy values else there will be problems if list is freed
 //TODO add benchmark
 
 linkedList* createList() {
@@ -165,6 +165,11 @@ int findIndexOfValue(linkedList* l, void* value, bool (*comparator)(void*, void*
     return -1;
 }
 
+int getListSize(linkedList* l) {
+    checkNull(l);
+    return l->_size;
+}
+
 void reverseList(linkedList* l) {
     checkNull(l);
     node* current = l->head;
@@ -243,4 +248,56 @@ bool stringComparator(void* searchVal, void* currentVal) {
         }
     }
     return true;
+}
+
+void** listToArrayShallowCpy(linkedList* l) {
+    checkNull(l);
+    void** arr = malloc(getListSize(l) * sizeof(void*));
+    node* current = l->head;
+    for (int i = 0; current; i++) {
+        arr[i] = current->value;
+        current = current->next;
+    }
+    return arr;
+}
+
+void** listToArrayDeepCpy(linkedList* l, void* (*memAllocFunc)(void*)) {
+
+    checkNull(l);
+    void** arr = malloc(getListSize(l) * sizeof(void*));
+    node* current = l->head;
+    for (int i = 0; current; i++) {
+        arr[i] = memAllocFunc(current->value);
+        current = current->next;
+    }
+    return arr;
+}
+
+static void* mallocAndAssign(size_t blockSize, void* valToAsssign) {
+    void* blockp = malloc(blockSize);
+    return memcpy(blockp, valToAsssign, blockSize);
+}
+
+void* intMemAlloc(void* intToCpy) {
+    return mallocAndAssign(sizeof(int), intToCpy);
+}
+
+void* floatMemAlloc(void* floatToCpy) {
+    return mallocAndAssign(sizeof(float), floatToCpy);
+}
+
+void* doubleMemAlloc(void* doubleToCpy) {
+    return mallocAndAssign(sizeof(double), doubleToCpy);
+}
+
+void* longMemAlloc(void* longToCpy) {
+    return mallocAndAssign(sizeof(long), longToCpy);
+}
+
+void* charMemAlloc(void* charToCpy) {
+    return mallocAndAssign(sizeof(char), charToCpy);
+}
+
+void* stringMemAlloc(void* strToCpy) {
+    return strdup((char*)strToCpy);
 }
