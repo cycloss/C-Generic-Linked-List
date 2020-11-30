@@ -110,6 +110,11 @@ int main() {
     int foundIndex2 = findIndexOfValue(l, searchStr, stringComparator);
     foundIndex2 == -1 ? puts("Failed to find search string") : printf("Found value %s at index: %i\n", searchStr, foundIndex2);
 
+    char* valueToRemove = "Berlin";
+    char* removed = removeValue(l, valueToRemove, stringComparator);
+    removed ? printf("Removed: %s\n", valueToRemove) : printf("Failed to remove %s\n", valueToRemove);
+    free(removed);
+
     puts("Creating deep copy array from list...");
     char** arr2 = (char**)listToArrayDeepCpy(l, stringMemAlloc);
     printStringArray(arr2, getListSize(l));

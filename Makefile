@@ -11,6 +11,9 @@ OS := $(shell uname)
 test: $(SOURCE_FILES) $(HEADER_FILES)
 	gcc -Wall $(SOURCE_FILES) $(TEST_FILE) -o $(TEST_NAME)
 
+debugTest: $(SOURCE_FILES) $(HEADER_FILES)
+	gcc -Wall -g $(SOURCE_FILES) $(TEST_FILE) -o $(TEST_NAME)
+
 ./$(TEST_NAME): test
 
 leakCheck: ./$(TEST_NAME)

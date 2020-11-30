@@ -105,6 +105,19 @@ static void* traverseNode(node* n, int remaining) {
     }
 }
 
+static void handleRemoval(linkedList* l, node* previous, node* current) {
+    if (current == l->head) {
+        l->head = current->next;
+    }
+    if (current == l->tail) {
+        l->tail = previous;
+    }
+    if (previous) {
+        previous->next = current->next;
+    }
+    l->_size--;
+}
+
 void* removeValueAt(linkedList* l, int index) {
     checkNull(l);
     if (index >= l->_size || index < 0) {
@@ -116,20 +129,31 @@ void* removeValueAt(linkedList* l, int index) {
             previous = current;
             current = current->next;
         }
-        if (current == l->head) {
-            l->head = current->next;
-        }
-        if (current == l->tail) {
-            l->tail = previous;
-        }
-        if (previous) {
-            previous->next = current->next;
-        }
+        handleRemoval(l, previous, current);
         void* val = current->value;
         free(current);
-        l->_size--;
         return val;
     }
+}
+
+/**
+ * Removes first instance of a value
+ * 
+*/
+void* removeValue(linkedList* l, void* pVal, bool (*comparator)(void*, void*)) {
+    node* current = l->head;
+    node* previous = NULL;
+    while (current) {
+        if (comparator(pVal, current->value)) {
+            handleRemoval(l, previous, current);
+            void* val = current->value;
+            free(current);
+            return val;
+        }
+        previous = current;
+        current = current->next;
+    }
+    return NULL;
 }
 
 void* getValueAt(linkedList* l, int index) {
