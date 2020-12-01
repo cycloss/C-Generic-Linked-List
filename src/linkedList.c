@@ -232,16 +232,33 @@ static void freeNodeAndValue(node* n) {
     free(n);
 }
 
-void clearList(linkedList* l) {
-    iterateListNodes(l, freeNodeAndValue);
+static void freeNode(node* n) {
+    free(n);
+}
+
+/**
+ * Removes all values from list
+ * @param l a pointer to a linked list to remove values from
+ * @param freeValues a bool for whether or not to free list value pointers from memory
+ **/
+void clearList(linkedList* l, bool freeValues) {
+    if (freeValues) {
+        iterateListNodes(l, freeNodeAndValue);
+    } else {
+        iterateListNodes(l, freeNode);
+    }
     l->head = NULL;
     l->tail = NULL;
     l->_size = 0;
 }
 
-void freeList(linkedList* l) {
-    checkNull(l);
-    clearList(l);
+/**
+ * Removes all values from list and frees the list from memory
+ * @param l a pointer to a linked list to clear and free from memory
+ * @param freeValues a bool for whether or not to free list value pointers from memory
+ **/
+void freeList(linkedList* l, bool freeValues) {
+    clearList(l, freeValues);
     free(l);
 }
 

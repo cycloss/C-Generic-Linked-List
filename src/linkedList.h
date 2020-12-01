@@ -1,8 +1,12 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
-#include "node.h"
 #include <stdbool.h>
+
+typedef struct node {
+    void* value;
+    struct node* next;
+} node;
 
 typedef struct {
     node* head;
@@ -25,8 +29,8 @@ int findIndexOfValue(linkedList* l, void* value, bool (*comparator)(void*, void*
 int getListSize(linkedList* l);
 void iterateListValues(linkedList* l, void (*iterator)(void*));
 void reverseList(linkedList* l);
-void clearList(linkedList* l);
-void freeList(linkedList* l);
+void clearList(linkedList* l, bool freeValues);
+void freeList(linkedList* l, bool freeValues);
 
 bool intComparator(void* searchVal, void* currentVal);
 bool floatComparator(void* searchVal, void* currentVal);

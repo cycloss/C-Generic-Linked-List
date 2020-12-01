@@ -1,7 +1,7 @@
 SRC_DIR = src/
 TEST_DIR = test/
 SOURCE_FILES = $(addprefix $(SRC_DIR), linkedList.c)
-HEADER_FILES = $(addprefix $(SRC_DIR), node.h linkedList.h)
+HEADER_FILES = $(addprefix $(SRC_DIR), linkedList.h)
 TEST_NAME = linkedListTest
 TEST_FILE = $(TEST_DIR)$(TEST_NAME).c
 
