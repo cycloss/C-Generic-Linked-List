@@ -52,10 +52,10 @@ bool prependToList(linkedList* l, void* pVal) {
     if (l->head) {
         np->next = l->head;
         l->head = np;
+        l->_size++;
     } else {
         appendToList(l, pVal);
     }
-    l->_size++;
     return true;
 }
 
@@ -176,10 +176,8 @@ void* getFirst(linkedList* l) {
     return getValueAt(l, 0);
 }
 
-//TODO rework get last and remove last so they are o(1) operations
-
 void* getLast(linkedList* l) {
-    return getValueAt(l, l->_size - 1);
+    return l->tail ? l->tail->value : NULL;
 }
 
 int getLastIndex(linkedList* l) {
