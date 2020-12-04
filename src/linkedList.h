@@ -21,6 +21,8 @@ bool prependToList(linkedList* l, void* pVal);
 bool insertValueAt(linkedList* l, int index, void* pVal);
 void* removeValueAt(linkedList* l, int index);
 void* removeValue(linkedList* l, void* pVal, bool (*comparator)(void*, void*));
+void* removeFirst(linkedList* l);
+void* removeLast(linkedList* l);
 void* getValueAt(linkedList* l, int index);
 void* getFirst(linkedList* l);
 void* getLast(linkedList* l);

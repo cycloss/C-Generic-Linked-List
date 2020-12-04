@@ -4,12 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-//TODO add benchmark
+static void* fatalError(char* msg) {
+    printf("Fatal error: %s\n", msg);
+    exit(1);
+    return NULL;
+}
 
 linkedList* createList() {
     linkedList* newListP = malloc(sizeof(linkedList));
     if (!newListP) {
-        return NULL;
+        fatalError("Failed to create list");
     }
     linkedList l = { NULL, NULL, 0 };
     *newListP = l;
@@ -19,26 +23,13 @@ linkedList* createList() {
 static node* createNode(void* pVal) {
     node* np = malloc(sizeof(node));
     if (!np) {
-        return NULL;
+        fatalError("Failed to create list node");
     }
     *np = (node) { pVal, NULL };
     return np;
 }
 
-static void* fatalError(char* msg) {
-    printf("Fatal error: %s\n", msg);
-    exit(1);
-    return NULL;
-}
-
-static void checkNull(linkedList* l) {
-    if (!l) {
-        fatalError("linkedList was null");
-    }
-}
-
 bool appendToList(linkedList* l, void* pVal) {
-    checkNull(l);
     node* np = createNode(pVal);
     if (!np) {
         return false;
@@ -54,7 +45,6 @@ bool appendToList(linkedList* l, void* pVal) {
 }
 
 bool prependToList(linkedList* l, void* pVal) {
-    checkNull(l);
     node* np = createNode(pVal);
     if (!np) {
         return false;
@@ -70,7 +60,6 @@ bool prependToList(linkedList* l, void* pVal) {
 }
 
 bool insertValueAt(linkedList* l, int index, void* pVal) {
-    checkNull(l);
     if (index > l->_size || index < 0) {
         fatalError("Index out of bounds");
         return false;
@@ -119,7 +108,6 @@ static void handleRemoval(linkedList* l, node* previous, node* current) {
 }
 
 void* removeValueAt(linkedList* l, int index) {
-    checkNull(l);
     if (index >= l->_size || index < 0) {
         return fatalError("Index out of bounds");
     } else {
@@ -156,8 +144,27 @@ void* removeValue(linkedList* l, void* pVal, bool (*comparator)(void*, void*)) {
     return NULL;
 }
 
+/**
+ * Removes the first value.
+ * @return a pointer to the removed first value, null pointer if no first value.
+ */
+void* removeFirst(linkedList* l) {
+    if (l->_size == 0) {
+        return NULL;
+    } else {
+        return removeValueAt(l, 0);
+    }
+}
+
+void* removeLast(linkedList* l) {
+    if (l->_size == 0) {
+        return NULL;
+    } else {
+        return removeValueAt(l, l->_size - 1);
+    }
+}
+
 void* getValueAt(linkedList* l, int index) {
-    checkNull(l);
     if (index >= l->_size || index < 0) {
         return fatalError("Index out of bounds");
     } else {
@@ -169,17 +176,17 @@ void* getFirst(linkedList* l) {
     return getValueAt(l, 0);
 }
 
+//TODO rework get last and remove last so they are o(1) operations
+
 void* getLast(linkedList* l) {
     return getValueAt(l, l->_size - 1);
 }
 
 int getLastIndex(linkedList* l) {
-    checkNull(l);
     return l->_size <= 0 ? -1 : l->_size - 1;
 }
 
 int findIndexOfValue(linkedList* l, void* value, bool (*comparator)(void*, void*)) {
-    checkNull(l);
     node* current = l->head;
     for (int i = 0; current; current = current->next, i++) {
         if (comparator(value, current->value)) {
@@ -190,12 +197,10 @@ int findIndexOfValue(linkedList* l, void* value, bool (*comparator)(void*, void*
 }
 
 int getListSize(linkedList* l) {
-    checkNull(l);
     return l->_size;
 }
 
 void reverseList(linkedList* l) {
-    checkNull(l);
     node* current = l->head;
     node* previous = NULL;
     while (current) {
@@ -211,14 +216,12 @@ void reverseList(linkedList* l) {
 }
 
 void iterateListValues(linkedList* l, void (*iterator)(void*)) {
-    checkNull(l);
     for (node* current = l->head; current; current = current->next) {
         iterator(current->value);
     }
 }
 
 static void iterateListNodes(linkedList* l, void (*iterator)(node*)) {
-    checkNull(l);
     node* current = l->head;
     while (current) {
         node* next = current->next;
@@ -292,7 +295,6 @@ bool stringComparator(void* searchVal, void* currentVal) {
 }
 
 void** listToArrayShallowCpy(linkedList* l) {
-    checkNull(l);
     void** arr = malloc(getListSize(l) * sizeof(void*));
     node* current = l->head;
     for (int i = 0; current; i++) {
@@ -303,8 +305,6 @@ void** listToArrayShallowCpy(linkedList* l) {
 }
 
 void** listToArrayDeepCpy(linkedList* l, void* (*memAllocFunc)(void*)) {
-
-    checkNull(l);
     void** arr = malloc(getListSize(l) * sizeof(void*));
     node* current = l->head;
     for (int i = 0; current; i++) {
