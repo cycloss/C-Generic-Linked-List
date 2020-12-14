@@ -173,7 +173,7 @@ void* getValueAt(linkedList* l, int index) {
 }
 
 void* getFirst(linkedList* l) {
-    return getValueAt(l, 0);
+    return l->head ? l->head->value : NULL;
 }
 
 void* getLast(linkedList* l) {
@@ -196,6 +196,10 @@ int findIndexOfValue(linkedList* l, void* value, bool (*comparator)(void*, void*
 
 int getListSize(linkedList* l) {
     return l->_size;
+}
+
+bool listIsEmpty(linkedList* l) {
+    return l->_size == 0;
 }
 
 void reverseList(linkedList* l) {
@@ -227,6 +231,8 @@ static void iterateListNodes(linkedList* l, void (*iterator)(node*)) {
         current = next;
     }
 }
+
+//TODO add advance iterator function and create iterator
 
 static void freeNodeAndValue(node* n) {
     free(n->value);
@@ -263,27 +269,27 @@ void freeList(linkedList* l, bool freeValues) {
     free(l);
 }
 
-bool intComparator(void* searchVal, void* currentVal) {
+bool intComp(void* searchVal, void* currentVal) {
     return *(int*)searchVal == *(int*)currentVal;
 }
 
-bool floatComparator(void* searchVal, void* currentVal) {
+bool floatComp(void* searchVal, void* currentVal) {
     return *(float*)searchVal == *(float*)currentVal;
 }
 
-bool doubleComparator(void* searchVal, void* currentVal) {
+bool doubleComp(void* searchVal, void* currentVal) {
     return *(double*)searchVal == *(double*)currentVal;
 }
 
-bool longComparator(void* searchVal, void* currentVal) {
+bool longComp(void* searchVal, void* currentVal) {
     return *(long*)searchVal == *(long*)currentVal;
 }
 
-bool charComparator(void* searchVal, void* currentVal) {
+bool charComp(void* searchVal, void* currentVal) {
     return *(char*)searchVal == *(char*)currentVal;
 }
 
-bool stringComparator(void* searchVal, void* currentVal) {
+bool strComp(void* searchVal, void* currentVal) {
     for (char *str1 = (char*)searchVal, *str2 = (char*)currentVal; *str1 != '\0' || *str2 != '\0'; str1++, str2++) {
         if (*str1 != *str2) {
             return false;

@@ -27,7 +27,6 @@ int main() {
     void* res2 = removeValueAt(l, ind);
     if (res2) {
         printf("Value removed at index %i: %i\n", ind, *(int*)res2);
-        free(res2);
     }
 
     int val = 8;
@@ -36,7 +35,7 @@ int main() {
     printIntList(l);
 
     int searchVal = 3;
-    int foundIndex = findIndexOfValue(l, &searchVal, intComparator);
+    int foundIndex = findIndexOfValue(l, &searchVal, intComp);
     foundIndex == -1 ? puts("Failed to find search int") : printf("Found value %i at index: %i\n", searchVal, foundIndex);
 
     int lastIndex = getLastIndex(l);
@@ -61,11 +60,11 @@ int main() {
     printStringList(l);
 
     char* searchStr = "Tokyo";
-    int foundIndex2 = findIndexOfValue(l, searchStr, stringComparator);
+    int foundIndex2 = findIndexOfValue(l, searchStr, strComp);
     foundIndex2 == -1 ? puts("Failed to find search string") : printf("Found value %s at index: %i\n", searchStr, foundIndex2);
 
     char* valueToRemove = "Berlin";
-    char* removed = removeValue(l, valueToRemove, stringComparator);
+    char* removed = removeValue(l, valueToRemove, strComp);
     removed ? printf("Removed: %s\n", valueToRemove) : printf("Failed to remove %s\n", valueToRemove);
     free(removed);
 
