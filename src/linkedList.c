@@ -45,18 +45,18 @@ bool appendToList(linkedList* l, void* pVal) {
 }
 
 bool prependToList(linkedList* l, void* pVal) {
-    node* np = createNode(pVal);
-    if (!np) {
-        return false;
-    }
     if (l->head) {
+        node* np = createNode(pVal);
+        if (!np) {
+            return false;
+        }
         np->next = l->head;
         l->head = np;
         l->_size++;
+        return true;
     } else {
-        appendToList(l, pVal);
+        return appendToList(l, pVal);
     }
-    return true;
 }
 
 bool insertValueAt(linkedList* l, int index, void* pVal) {

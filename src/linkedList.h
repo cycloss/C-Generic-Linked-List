@@ -53,3 +53,13 @@ void* charMemAlloc(void* charToCpy);
 void* stringMemAlloc(void* strToCpy);
 
 #endif
+
+#ifndef KVP_H
+#define KVP_H
+
+typedef struct {
+    void* key;
+    void* val;
+} keyValPair;
+
+#endif
